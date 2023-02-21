@@ -59,8 +59,10 @@ printer.printBitmap(adalogo.width, adalogo.height, adalogo.data)
 
 # Print the 135x135 pixel QR code in adaqrcode.py
 import gfx.adaqrcode as adaqrcode
+printer.justify('C')
 printer.printBitmap(adaqrcode.width, adaqrcode.height, adaqrcode.data)
 printer.println("Adafruit!")
+printer.justify('L')
 printer.feed(2)
 
 printer.sleep()      # Tell printer to sleep
