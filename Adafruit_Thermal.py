@@ -561,15 +561,23 @@ class Adafruit_Thermal(Serial):
 	# For any other behavior (scale, B&W threshold, etc.), use
 	# the Imaging Library to perform such operations before
 	# passing the result to this function.
-	def printImage(self, image_file, LaaT=False, justify=False):
+	def printImage(self, image_file, LaaT=False, justify=False, resize=False):
 		from PIL import Image
 		# image = Image.open(image_file)
 		image = image_file
 		if image.mode != '1':
 			image = image.convert('1')
 
-		width  = image.size[0]
-		height = image.size[1]
+		width, height = image.size
+		if resize:
+			# if non-float (True, 1): set image to 100% print width
+			# if float: interpret as fraction (.5 => 50%)
+			desiredWidth = 384
+			if type(resize) is float: desiredWidth *= max(0, min(resize, 1))
+			width, height = [
+				math.floor(desiredWidth),
+				math.floor(desiredWidth * height / width)]
+			image = image.resize([width, height])
 		if width > 384:
 			width = 384
 		rowBytes = math.floor((width + 7) / 8)
